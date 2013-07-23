@@ -19,14 +19,16 @@ public class Game {
 	private boolean init;
 	private boolean status;
 
+	private boolean statusCommand;
+
 	public Game() {
 		this.boardPlayer1 = new HashMap<String, EnumElement>();
 		this.boardPlayer2 = new HashMap<String, EnumElement>();
 		this.status = false;
 	}
 
-	public boolean finish() {
-		return this.status;
+	public void finish() {
+		this.statusCommand = this.status;
 	}
 
 	public String createPosition(EnumLine line, EnumColumn column) {
@@ -151,7 +153,7 @@ public class Game {
 		this.init = true;
 	}
 
-	public boolean shot(EnumBoard player, EnumLine line, EnumColumn column)
+	public void shoot(EnumBoard player, EnumLine line, EnumColumn column)
 			throws PositionAlreadyUsedException, InvalidPositionException {
 
 		Map<String, EnumElement> board = (player.equals(EnumBoard.PLAYER1)) ? this.boardPlayer1
@@ -160,14 +162,14 @@ public class Game {
 		if (this.checkPositionUsed(board, line, column)) {
 			if (this.isEmpty(board, line, column)) {
 				board.put(this.createPosition(line, column), EnumElement.WATER);
-				return false;
+				this.statusCommand = false;
 			} else {
 				board.put(this.createPosition(line, column), EnumElement.HIT);
-				return true;
+				this.statusCommand = true;
 			}
+		} else {
+			this.statusCommand = false;
 		}
-
-		return false;
 
 	}
 
@@ -181,4 +183,9 @@ public class Game {
 			return true;
 		}
 	}
+
+	public boolean isStatusCommand() {
+		return statusCommand;
+	}
+
 }
